@@ -3,12 +3,12 @@ const fs = require("fs");
 require("dotenv").config();
 
 const config = {
-  SESSION_ID: process.env.SESSION_ID || "Your Session Id",
+  SESSION_ID: process.env.SESSION_ID || "YeyJub2lzZUtleSI6eyJwcml2YXRlIjp7InR5cGUiOiJCdWZmZXIiLCJkYXRhIjoiZVBvWWZaYklOS0NLdTJ3SGpRUldtVmlzNmRlUkRCRlRsaHAvVlZxbXVXMD0ifSwicHVibGljIjp7InR5cGUiOiJCdWZmZXIiLCJkYXRhIjoiU3poOVZodHduMGRoU1ovUENuOTc1UDM0YXRFY0d3dmtCNmZ3VkIvN05obz0ifX0sInBhaXJpbmdFcGhlbWVyYWxLZXlQYWlyIjp7InByaXZhdGUiOnsidHlwZSI6IkJ1ZmZlciIsImRhdGEiOiJvQ0xSWCs5SmhmekxtTnBmcHFLMVp4Q3lMb1E4djJmVXlUNHBOaFRJOTBRPSJ9LCJwdWJsaWMiOnsidHlwZSI6IkJ1ZmZlciIsImRhdGEiOiJGL2ovT2xlWjRXNUFyeFMweGhFNWR3NEZjSWdQV0tia0IydDl1QmpaZTAwPSJ9fSwic2lnbmVkSWRlbnRpdHlLZXkiOnsicHJpdmF0ZSI6eyJ0eXBlIjoiQnVmZmVyIiwiZGF0YSI6IjZLRlIweSs1U243UmIvOWtLdGIwWVNacHJPbGNUQjIrOW9KZHpQbDh1Mlk9In0sInB1YmxpYyI6eyJ0eXBlIjoiQnVmZmVyIiwiZGF0YSI6Ik9RUGhTOGZOQitqckx3VDgrU2hIMFlhKy9zcVFTVDJNUkdSVUlscTRoVDg9In19LCJzaWduZWRQcmVLZXkiOnsia2V5UGFpciI6eyJwcml2YXRlIjp7InR5cGUiOiJCdWZmZXIiLCJkYXRhIjoiT0NXTzJTQUNQU0Q4eGJFWWpWUlVKdUUzb2hpZmR3TFV5QWZSdHV0R2JtWT0ifSwicHVibGljIjp7InR5cGUiOiJCdWZmZXIiLCJkYXRhIjoiM3lpRktyVWFwblVxbmUxS0RqemY5N2NkT2VocXRtS0FCalJHbm1JbEh6Zz0ifX0sInNpZ25hdHVyZSI6eyJ0eXBlIjoiQnVmZmVyIiwiZGF0YSI6Img0SmJEby9zNG1NYnExQ0FHdWVscS9id1FqQzlLTkVDZTJuang4QUVCckFIeE0zZmZxNU5MM2RZblBTaFYwdVFRdVYyUmQvZmF3dktqVWUvc0xnNkN3PT0ifSwia2V5SWQiOjF9LCJyZWdpc3RyYXRpb25JZCI6MjMwLCJhZHZTZWNyZXRLZXkiOiJjTnAxaGxaMlJYVTk3NzhaYUJScWxWVkpNTEozZ0NvYUtGanUyamY0S2xBPSIsInByb2Nlc3NlZEhpc3RvcnlNZXNzYWdlcyI6W3sia2V5Ijp7InJlbW90ZUppZCI6IjI1NDc5Mzc1MzMyN0BzLndoYXRzYXBwLm5ldCIsImZyb21NZSI6dHJ1ZSwiaWQiOiI5RDQ2QzhFNjM5M0VBODM0NDIxRTNCMTc2NjQ3M0MzQSJ9LCJtZXNzYWdlVGltZXN0YW1wIjoxNzQ2ODIyNzMzfSx7ImtleSI6eyJyZW1vdGVKaWQiOiIyNTQ3OTM3NTMzMjdAcy53aGF0c2FwcC5uZXQiLCJmcm9tTWUiOnRydWUsImlkIjoiQUM4QTRBREVBQjg2OUEzN0ZCMUZCNUY5NjM0QkU5MkMifSwibWVzc2FnZVRpbWVzdGFtcCI6MTc0NjgyMjczNH1dLCJuZXh0UHJlS2V5SWQiOjMxLCJmaXJzdFVudXBsb2FkZWRQcmVLZXlJZCI6MzEsImFjY291bnRTeW5jQ291bnRlciI6MSwiYWNjb3VudFNldHRpbmdzIjp7InVuYXJjaGl2ZUNoYXRzIjpmYWxzZX0sImRldmljZUlkIjoiWlp6NzRKT0VTQTJPeGlPNlQ4cXJEQSIsInBob25lSWQiOiI2YTcxODlkYi05MDg3LTQwYzctYmUxYS0zYTQ2YjJjZjM4NzQiLCJpZGVudGl0eUlkIjp7InR5cGUiOiJCdWZmZXIiLCJkYXRhIjoiMlhoL0JQQ1FUV3k2LzRaTzhLTTV5bURoU3F3PSJ9LCJyZWdpc3RlcmVkIjp0cnVlLCJiYWNrdXBUb2tlbiI6eyJ0eXBlIjoiQnVmZmVyIiwiZGF0YSI6ImhEWTlCS0I5Yjc3UDNzWkQwZ3ZJTkpXTjJ6UT0ifSwicmVnaXN0cmF0aW9uIjp7fSwicGFpcmluZ0NvZGUiOiI4OEQ2N0pBNSIsIm1lIjp7ImlkIjoiMjU0NzkzNzUzMzI3OjY0QHMud2hhdHNhcHAubmV0IiwibmFtZSI6IvCdkI3wnZCe8J2QsPCdkK3wnZCo8J2QpyDwnZCA8J2Qp/CdkJ3wnZCa8J2QpfCdkJoifSwiYWNjb3VudCI6eyJkZXRhaWxzIjoiQ0tyaS9hb0NFTDNNK2NBR0dBRWdBQ2dBIiwiYWNjb3VudFNpZ25hdHVyZUtleSI6Ind3TXdNcHNSK3VMaXZ2aDJkNDFYYU1rUW11ZXBpZWlFbUIyenFCZHBTbEE9IiwiYWNjb3VudFNpZ25hdHVyZSI6IjRQUjhBMVJLOWpzQjlLMTQrSTl5NDl4RnlNUG9ZZ2JRYkFlWjAvWlpzR1JPSE5RTkVOZlQ1QnRsYmtsZjVnbzljUzhydjFwUktoNmN4RUpJY29rN0NnPT0iLCJkZXZpY2VTaWduYXR1cmUiOiJ2N3YzVlVUMENXVXNxNWtaeml0Ym1NOFh0N2c2K241TFlKckxTWkxvdVZwOTZwRHBTNFhmZEZUOUVHUUtmY1MxcEUxVmJwbS9GM2liWmw4L0RHTTlBZz09In0sInNpZ25hbElkZW50aXRpZXMiOlt7ImlkZW50aWZpZXIiOnsibmFtZSI6IjI1NDc5Mzc1MzMyNzo2NEBzLndoYXRzYXBwLm5ldCIsImRldmljZUlkIjowfSwiaWRlbnRpZmllcktleSI6eyJ0eXBlIjoiQnVmZmVyIiwiZGF0YSI6IkJjTURNREtiRWZyaTRyNzRkbmVOVjJqSkVKcm5xWW5vaEpnZHM2Z1hhVXBRIn19XSwicGxhdGZvcm0iOiJzbWJhIiwibGFzdEFjY291bnRTeW5jVGltZXN0YW1wIjoxNzQ2ODIyNzMxLCJteUFwcFN0YXRlS2V5SWQiOiJBQUFBQUVZWSJ9",
   PREFIX: process.env.PREFIX || '.',
   AUTO_STATUS_SEEN: process.env.AUTO_STATUS_SEEN !== undefined ? process.env.AUTO_STATUS_SEEN === 'true' : true, 
   AUTO_DL: process.env.AUTO_DL !== undefined ? process.env.AUTO_DL === 'true' : false,
   AUTO_READ: process.env.AUTO_READ !== undefined ? process.env.AUTO_READ === 'true' : false,
-  AUTO_TYPING: process.env.AUTO_TYPING !== undefined ? process.env.AUTO_TYPING === 'true' : false,
+  AUTO_TYPING: process.env.AUTO_TYPING !== undefined ? process.env.AUTO_TYPING === 'false' : false,
   AUTO_RECORDING: process.env.AUTO_RECORDING !== undefined ? process.env.AUTO_RECORDING === 'true' : false,
   ALWAYS_ONLINE: process.env.ALWAYS_ONLINE !== undefined ? process.env.ALWAYS_ONLINE === 'true' : false,
   AUTO_REACT: process.env.AUTO_REACT !== undefined ? process.env.AUTO_REACT === 'true' : false,
@@ -16,11 +16,11 @@ const config = {
   AUTO_BLOCK: process.env.AUTO_BLOCK !== undefined ? process.env.AUTO_BLOCK === 'true' : true,
   
   
-  REJECT_CALL: process.env.REJECT_CALL !== undefined ? process.env.REJECT_CALL === 'true' : false, 
+  REJECT_CALL: process.env.REJECT_CALL !== undefined ? process.env.REJECT_CALL === 'false' : false, 
   NOT_ALLOW: process.env.NOT_ALLOW !== undefined ? process.env.NOT_ALLOW === 'true' : true,
   MODE: process.env.MODE || "public",
-  OWNER_NAME: process.env.OWNER_NAME || "©yessertech",
-  OWNER_NUMBER: process.env.OWNER_NUMBER || "255621995482",
+  OWNER_NAME: process.env.OWNER_NAME || "©NEWTON",
+  OWNER_NUMBER: process.env.OWNER_NUMBER || "2554793753327",
   GEMINI_KEY: process.env.GEMINI_KEY || "AIzaSyCUPaxfIdZawsKZKqCqJcC-GWiQPCXKTDc",
   WELCOME: process.env.WELCOME !== undefined ? process.env.WELCOME === 'true' : false, 
 };
